@@ -9,6 +9,18 @@ use App\Http\Resources\ProductResource;
 class ProductController extends Controller
 {
     public function index(Request $request) {
+        if ($request->search_query) {
+            $products = Product::with('category')
+                ->whereHas('category', function($q) use ($request) {
+                    $q->where('name', 'LIKE', '%'.$request->search_query.'%');
+                })
+                ->orWhere('name', 'LIKE', '%'.$request->search_query.'%')
+                ->orWhere('code', 'LIKE', '%'.$request->search_query.'%')
+                ->orWhere('gender', '=', $request->search_query)
+                ->orderBy($request->order_by, $request->type)
+                ->paginate(14);
+            return ProductResource::collection($products);
+        }
         $products = Product::with('category')->orderBy($request->order_by, $request->type)->paginate(14);
         return ProductResource::collection($products);
     }
@@ -57,5 +69,8 @@ class ProductController extends Controller
         }
         $productToDelete->delete();
         return response('', 200);
+    }
+    public function deleteImgFromCloudinary(){
+        
     }
 }

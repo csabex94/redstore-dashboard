@@ -1,11 +1,15 @@
 <template>
-    <div class="addProduct">
-        <h3 class="title">Add Product</h3>
+    <div @updateProduct="setProductToUpdate" class="updateProduct">
+        <h3 class="title">Update Product</h3>
         <hr />
         <h4 class="selectImage">Select Image</h4>
         <template v-if="form.img">
             <div class="img">
                 <img :src="form.img" alt="product">
+            </div>
+            <div class="select-img">
+                   <span>Click to select file</span>
+                   <input @change="uploadImgToCloudinary" type="file">
             </div>
         </template>
         <template v-else>
@@ -15,7 +19,7 @@
                 <input @change="uploadImgToCloudinary" type="file">
             </div>
         </template>
-        <form @submit="addNewProduct">
+        <form @submit="updateProduct">
             <div class="form-control">
                 <label for="name">Product name</label>
                 <input v-model="form.productName" id="name" type="text">
@@ -31,8 +35,8 @@
             <div class="form-control">
                 <label for="category">Category</label>
                 <select id="category" v-model="form.productCategory">
-                    <option selected disabled >Select category</option>
-                    <option :key="category.id" v-bind:value="category.id" v-for="category in categories">{{ category.name }}</option>
+                    <option selected disabled >{{ form.productCategory }}</option>
+                    <option :key="category.id" v-bind:value="category" v-for="category in categories">{{ category.name }}</option>
                 </select>
             </div>
             <div class="form-control">
@@ -47,7 +51,7 @@
                 <label for="descritpion">Description</label>
                 <textarea v-model="form.productDescription" id="description" rows="5"></textarea>
             </div>
-            <button @submit="addNewProduct" type="submit">Add Product</button>
+            <button @submit="updateProduct" type="submit">Update Product</button>
         </form>
     </div>
 </template>
@@ -63,11 +67,17 @@ export default {
                 productName: "",
                 productPrice: 0,
                 productCount: 0,
-                productCategory: "Select category",
-                productGender: "Select gender",
-                productDescription: ""
+                productCategory: "",
+                productGender: "",
+                productDescription: "",
             }
         }
+    },
+    computed: {
+        ...mapGetters({
+            categories: 'getCategoriesFromStore',
+            productToUpdate: "getProductToUpdateFromStore"
+        })
     },
     methods: {
         async uploadImgToCloudinary(event) {
@@ -80,38 +90,39 @@ export default {
             ).then((res) => res.data);
             this.form.img = cloudinaryResponse.url
         },
-        async addNewProduct(event) {
+        setProductToUpdate(product){
+            this.form.img =  product.img;
+            this.form.productName =  product.name;
+            this.form.productCount =  product.count;
+            this.form.productPrice =  product.price;
+            this.form.productCategory =  product.category.name;
+            this.form.productGender =  product.gender;
+            this.form.productDescription =  product.description;
+        },
+        async updateProduct(event){
             event.preventDefault();
-            const newProduct = {
-                name: this.form.productName,
-                img: this.form.img,
-                price: this.form.productPrice,
-                count: this.form.productCount,
-                category_id: this.form.productCategory,
-                gender: this.form.productGender,
-                description: this.form.productDescription
-            }
-            await this.$store.dispatch('addProduct', newProduct);
+            await this.$store.dispatch('updateProduct', { body: this.form, productId: this.$route.query.productId });
         }
     },
-    computed: {
-        ...mapGetters({
-            categories: 'getCategoriesFromStore',
-            newProductSuccess: 'getSuccessFromStore'
-        })
+    beforeRouteEnter(to, from, next) {
+        if (from.name !== 'dashboard_manage_products') {
+            next('/manage_products');
+        }
+        next();
+    },
+    created: async function () {
+        await this.$store.dispatch('getProductById', this.$route.query.productId);
     },
     watch: {
-        newProductSuccess(newVal, oldVal) {
-            if (newVal === true) {
-                this.$router.push('/manage_products');
-            }
+        productToUpdate(newVal, oldVal){
+            this.setProductToUpdate(newVal);
         }
     }
 }
 </script>
 
 <style scoped>
-    .addProduct {
+    .updateProduct {
         width: 98%;
         max-width: 1200px;
         min-height: 95%;
@@ -121,22 +132,22 @@ export default {
         padding: 20px;
         border-radius: 5px;
     }
-    .addProduct > .title {
+    .updateProduct > .title {
         color: #333;
         margin-bottom: 20px;
     }
-    .addProduct > .selectImage {
+    .updateProduct > .selectImage {
         margin-top: 25px;
         color: #333;
         margin-bottom: 10px;
     }
-    .addProduct > .img {
+    .updateProduct > .img {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    .addProduct > .img > img {
+    .updateProduct > .img > img {
         width: 40%;
         height: 200px;
         margin: 0 auto;
@@ -144,7 +155,7 @@ export default {
         box-shadow: 1px 1px 8px rgba(0, 0, 0, .25);
         border-radius: 5px;
     } 
-    .addProduct > .no-img {
+    .updateProduct > .no-img {
         background: #F0F2F5;
         box-shadow: 1px 1px 8px rgba(0, 0, 0, .25);
         border-radius: 5px;
@@ -158,17 +169,17 @@ export default {
         position: relative;
         cursor: pointer;
     }
-    .addProduct > .no-img > svg {
+    .updateProduct > .no-img > svg {
         font-size: 30px;
         color: #ff523b
     }
-    .addProduct > .no-img > p {
+    .updateProduct > .no-img > p {
         font-size: 13px;
         font-weight: bold;
         color: #333;
         margin-top: 5px;
     }
-    .addProduct > .no-img > input {
+    .updateProduct > .no-img > input {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -179,9 +190,9 @@ export default {
         opacity: 0;
         cursor: pointer;
     }
-    .addProduct > form > .form-control > input,
-    .addProduct > form > .form-control > select,
-    .addProduct > form > .form-control > textarea {
+    .updateProduct > form > .form-control > input,
+    .updateProduct > form > .form-control > select,
+    .updateProduct > form > .form-control > textarea {
         display: block;
         width: 100%;
         border: none;
@@ -191,17 +202,17 @@ export default {
         transition: all .3s;
         border: 1px solid #2f2f2f;
     }
-    .addProduct > form > .form-control > label {
+    .updateProduct > form > .form-control > label {
         font-weight: bold;
         color: #333;
     }
-    .addProduct > form > .form-control > input:focus,
-    .addProduct > form > .form-control > select:focus,
-    .addProduct > form > .form-control > textarea:focus {
+    .updateProduct > form > .form-control > input:focus,
+    .updateProduct > form > .form-control > select:focus,
+    .updateProduct > form > .form-control > textarea:focus {
         outline: none;
         box-shadow: 1px 1px 8px #ff523b;
     }
-    .addProduct > form > button {
+    .updateProduct > form > button {
         width: 100%;
         padding: 8px;
         background: #ff523b;
@@ -215,16 +226,34 @@ export default {
         border-radius: 5px;
         box-shadow: 1px 1px 8px rgba(0, 0, 0, .35);
     }
-    .addProduct > form {
+    .updateProduct > form {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-gap: 20px;
         margin-top: 25px;
     }
-    .addProduct > form > .form-control:nth-child(1) {
+    .updateProduct > form > .form-control:nth-child(1) {
         grid-column: 1 / -1;
     }
-    .addProduct > form > .form-control:nth-child(6) {
+    .updateProduct > form > .form-control:nth-child(6) {
         grid-column: 1 / -1;
+    }
+    .select-img {
+        background: #ff523b;
+        color: #fff;
+        width: 150px;
+        padding: 5px 0 5px 5px;
+        position: relative;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .select-img > input {
+        width: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    .select-img > span {
+        position: absolute;
+        cursor: pointer;
     }
 </style>

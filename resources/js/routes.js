@@ -5,6 +5,9 @@ import Login from './pages/dashboardLogin';
 import DashboardHome from './pages/dashboardHome';
 import DashboardAddProduct from './pages/dashboardAddProduct';
 import DashboardManageProducts from './pages/dashboardManageProducts';
+import DashboardCategories from './pages/dashboardCategories';
+import DahboardUpdateProduct from './pages/dashboardUpdateProduct';
+import DashboardAdmins from './pages/dashboardAdmins';
 
 import { store } from './store/store';
 import auth from './middleware/auth';
@@ -45,6 +48,36 @@ export const router = new VueRouter({
                     path: '/manage_products',
                     name: 'dashboard_manage_products',
                     component: DashboardManageProducts,
+                    meta: {
+                        middleware: [
+                            auth
+                        ]
+                    }
+                },
+                {
+                    path: '/update_product',
+                    name: 'dashboard_update_product',
+                    component: DahboardUpdateProduct,
+                    meta: {
+                        middleware: [
+                            auth
+                        ]
+                    }
+                },
+                {
+                    path: '/dashboard_admins',
+                    name: 'dashboard_admins',
+                    component: DashboardAdmins,
+                    meta: {
+                        middleware: [
+                            auth
+                        ]
+                    }
+                },
+                {
+                    path: '/categories',
+                    name: 'dashboard_categories',
+                    component: DashboardCategories,
                     meta: {
                         middleware: [
                             auth

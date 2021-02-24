@@ -16,7 +16,7 @@ class CategoryController extends Controller
         $newCategory = Category::create([
             'name' => $request->name
         ]);
-        return response('', 201);
+        return CategoryResource::collection(Category::all());
     }
 
     public function index(){
@@ -40,6 +40,6 @@ class CategoryController extends Controller
             return response(['error' => 'No category found.']);
         }
         $categoryToDelete->delete();
-        return response('', 200);
+        return CategoryResource::collection(Category::all());
     }
 }

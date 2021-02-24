@@ -35,4 +35,8 @@ class UserController extends Controller
         $token = Auth::user()->createToken('accessToken')->accessToken;
         return response()->json(['token' => $token, 'user' => Auth::user()]);
     }
+    public function admins() {
+        $admins = User::all();
+        return response()->json($admins);
+    }
 }

@@ -1,11 +1,11 @@
 <template>
     <div class="manage-products">
-        <h3 class="title">Manage Products Page</h3>
+        <h3 class="title">Manage Products</h3>
         <hr />
         <div class="search">
             <div class="form-control">
                 <label for="search-field">Search</label>
-                <input v-model="filter.search_query" id="search-field" type="text">
+                <input v-on:keyup.enter="applyFilter" v-model="filter.search_query" placeholder="name, category, code, gender" id="search-field" type="text">
             </div>
             <div class="form-control">
                 <label for="sort-by">Sort By</label>
@@ -25,10 +25,14 @@
             <span>Category</span>
             <span>Created At</span>
             <span>Price</span>
+            <span>Actions</span>
         </div>
+        <h2 class="no-products" v-if="products && products.length === 0">
+            No product found.
+        </h2>
         <div class="product" v-for="product in products" :key="product.id">
-            <span><input type="checkbox"> {{ product.id }}</span>
-            <span>{{ product.name.substring(0,20)+"..." }}</span>
+            <span>{{ product.id }}</span>
+            <span>{{ product.name.substring(0,15)+"..." }}</span>
             <span>{{ product.code }}</span>
             <span>{{ product.gender }}</span>
             <span>{{ product.count }}</span>
@@ -36,28 +40,43 @@
             <span>{{ product.category.name }}</span>
             <span>{{ product.created_at | moment('DD/MM/YYYY') }}</span>
             <span>${{ product.price }}</span>
+            <span>
+                <font-awesome-icon @click="redirectToUpdate(product.id)" icon="pen-square"/>
+                <font-awesome-icon @click="showDeleteProductModal(product)" icon="trash"/>
+            </span>
         </div>
         <div class="pagination">
             <button :key="index" v-for="(page, index) in numPages">
-                <span v-if="page.label === '&laquo; Previous'">
+                <span @click="handlePagination(page)" v-if="page.label === '&laquo; Previous'">
                     <font-awesome-icon icon="arrow-left" />
                 </span>
-                <span v-bind:class="page.active ? 'active' : ''" v-else-if="typeof(page.label) === 'number'">
+                <span @click="handlePagination(page)" v-bind:class="page.active ? 'active' : ''" v-else-if="typeof(page.label) === 'number'">
                     {{ index }}
                 </span>
-                <span v-else-if="page.label === 'Next &raquo;'">
+                <span @click="handlePagination(page)" v-else-if="page.label === 'Next &raquo;'">
                     <font-awesome-icon icon="arrow-right" />
                 </span>
             </button>
         </div>
+        <modal :width="400" :height="150" name="delete">
+            <delete-modal @closeModal="hideDeleteProductModal" :productId="selectedToDelete" />
+        </modal>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import DeleteModal from '../components/deleteModal';
 export default {
+    components: {
+        DeleteModal
+    },
     created: async function(){
-        await this.$store.dispatch('getProducts', this.filter.sort_by_options[2]);
+        await this.$store.dispatch('getProducts', { 
+            sort_by_query: this.filter.sort_by_options[2],
+            page_url: this.url,
+            search_query: this.filter.search_query
+        });
     },
     computed: {
         ...mapGetters({
@@ -67,8 +86,8 @@ export default {
     },
     data: function() {
         return {
-            page: 1,
-            pageination_buttons: [],
+            selectedToDelete: 0,
+            url: 'api/products/all?page=1',
             filter: {
                 sort_by_options: [
                     {
@@ -94,6 +113,18 @@ export default {
                         value: "created-at-asc",
                         type: "ASC",
                         query_string: "created_at"
+                    },
+                    {
+                        id: 5,
+                        value: "price-asc",
+                        type: "ASC",
+                        query_string: "price"
+                    },
+                    {
+                        id: 6,
+                        value: "price-desc",
+                        type: "DESC",
+                        query_string: "price"
                     }
                 ],
                 search_query: '',
@@ -106,23 +137,58 @@ export default {
             event.preventDefault();
             await this.$store.dispatch(
                 'getProducts', 
-                this.filter.sort_by_options.find(option => option.value === this.filter.sort_by)
+                {
+                    sort_by_query: this.filter.sort_by_options.find(option => option.value === this.filter.sort_by),
+                    page_url: this.url,
+                    search_query: this.filter.search_query
+                }
             );
         },
+        async handlePagination(pageItem) {
+            await this.$store.dispatch(
+                'getProducts',
+                {
+                    sort_by_query: this.filter.sort_by_options.find(option => option.value === this.filter.sort_by),
+                    page_url: pageItem.url.slice(22),
+                    search_query: this.filter.search_query
+                }
+            )
+        },
+        showDeleteProductModal(product) {
+            this.selectedToDelete = product.id;
+            this.$modal.show('delete');
+        },
+        async hideDeleteProductModal(event) {
+            if (event.refetch) {
+                await this.$store.dispatch(
+                    'getProducts', 
+                    {
+                        sort_by_query: this.filter.sort_by_options.find(option => option.value === this.filter.sort_by),
+                        page_url: this.url,
+                        search_query: this.filter.search_query
+                    }
+                );
+            }
+            this.$modal.hide('delete');
+        },
+        redirectToUpdate(productId){
+            this.$router.push(`/update_product?productId=${productId}`);
+        }
     }
 }
 </script>
 
 <style scoped>
     .manage-products {
-        width: 95%;
+        width: 98%;
         max-width: 1200px;
-        min-height: 95%;
+        min-height: 765px;
         background: #fff;
         margin: 30px auto 0;
         box-shadow: 1px 1px 8px rgba(0, 0, 0, .25);
-        padding: 20px 30px;
+        padding: 20px;
         border-radius: 5px;
+        position: relative;
     }
     .manage-products > .title {
         color: #333;
@@ -196,9 +262,10 @@ export default {
         font-weight: bold;
         color: #333;
         padding: 8px 0;
+        width: 100%;
     }
     .manage-products > .product > span:first-child {
-        grid-column: 1 / 3;
+        grid-column: 1 / 2;
         justify-content: center;
         position: relative;
     }
@@ -209,35 +276,55 @@ export default {
         left: 15px;
     }
     .manage-products > .header > span:nth-child(1) {
-        justify-content: flex-end;
+        justify-content: center;
     }
     .manage-products > .product > span:nth-child(2), .manage-products > .header > span:nth-child(2) {
-        grid-column: 3 / 7;
+        grid-column: 2 / 5;
         justify-content: flex-start;
     }
     .manage-products > .product > span:nth-child(3), .manage-products > .header > span:nth-child(3) {
-        grid-column: 7 / 9;
+        grid-column: 5 / 7;
     }
     .manage-products > .product > span:nth-child(4), .manage-products > .header > span:nth-child(4) {
-        grid-column: 9 / 11;
+        grid-column: 7 / 9;
     }
     .manage-products > .product > span:nth-child(5), .manage-products > .header > span:nth-child(5) {
-        grid-column: 11 / 12;
+        grid-column: 9/ 10;
     }
     .manage-products > .product > span:nth-child(6), .manage-products > .header > span:nth-child(6) {
-        grid-column: 12 / 13;
+        grid-column: 10 / 11;
     }
     .manage-products > .product > span:nth-child(7),.manage-products > .header > span:nth-child(7) {
-        grid-column: 13 / 15;
+        grid-column: 11 / 13;
     }
     .manage-products > .product > span:nth-child(8), .manage-products > .header > span:nth-child(8) {
-        grid-column: 15 / 17;
+        grid-column: 13 / 15;
     }
     .manage-products > .product > span:nth-child(9), .manage-products > .header > span:nth-child(9) {
+        grid-column: 15 / 17;
+    }
+    .manage-products > .product > span:nth-child(10), .manage-products > .header > span:nth-child(10) {
         grid-column: 17 / 19;
+        align-items: center;
+        justify-content: center;
+    }
+    .manage-products > .product > span:nth-child(10) {
+        font-size: 20px;
+    }
+    .manage-products > .product > span:nth-child(10) > svg:first-child {
+        margin-right: 15px;
+    }
+    .manage-products > .product > span:nth-child(10) > svg {
+        cursor: pointer;
+        transition: .3s;
+        color: #333;
+    }
+    .manage-products > .product > span:nth-child(10) > svg:hover {
+        color: #ff523b;
     }
     .manage-products > .pagination {
-        margin-top: 10px;
+        position: absolute;
+        bottom: 5px;
     }
     .manage-products > .pagination > button > span.active {
         background: #ff523b;
@@ -258,5 +345,8 @@ export default {
         transition: all .3s;
         height: 100%;
         padding: 8px 0;
+    }
+    .manage-products > .pagination > button:focus {
+        outline: none;
     }
 </style>

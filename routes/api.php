@@ -39,4 +39,5 @@ Route::prefix('categories')->group(function(){
 
 Route::prefix('dashboard')->group(function() {
     Route::get('/data', '\App\Http\Controllers\DashboardController@index');
+    Route::get('/admins', '\App\Http\Controllers\UserController@admins');
 });

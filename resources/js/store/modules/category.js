@@ -3,6 +3,7 @@ import axios from 'axios';
 export const categoryModule = {
     state: {
         categories: null,
+        success: null
     },
     mutations: {
         setCategories(state, payload) {
@@ -16,6 +17,18 @@ export const categoryModule = {
                 state.commit('setCategories', res.data.data);
             }
             
+        },
+        async addCategory(state, payload) {
+            const res = await axios.post('api/categories/add', payload);
+            if (res.status === 200) {
+                state.commit('setCategories', res.data.data);
+            }
+        },
+        async deleteCategory(state, payload) {
+            const res = await axios.post(`api/categories/delete/${payload}`);
+            if (res.status === 200) {
+                state.commit('setCategories', res.data.data);
+            }
         }
     },
     getters: {

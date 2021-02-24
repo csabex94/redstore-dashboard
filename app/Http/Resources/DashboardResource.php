@@ -16,7 +16,11 @@ class DashboardResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'total_products' => count($this->totalProducts)
+            'total_products' => count($this->totalProducts),
+            'total_categories' => count($this->totalCategories),
+            'total_orders' => $this->totalOrders(),
+            'total_orders_value' => $this->totalOrdersValue(),
+            'total_admins' => count($this->totalAdmins)
         ];
     }
 }

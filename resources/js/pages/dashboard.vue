@@ -18,25 +18,19 @@
                 <li>
                     <router-link active-class="active-link" to="/manage_products">
                         <font-awesome-icon icon="list-alt" />
-                        Manage Product
+                        Manage Products
                     </router-link>
                 </li>
                 <li>
-                    <router-link active-class="active-link" to="/categgories">
+                    <router-link active-class="active-link" to="/categories">
                         <font-awesome-icon icon="sliders-h" />
                         Categories
                     </router-link>
                 </li>
                 <li>
-                    <router-link active-class="active-link" to="/admin_users">
+                    <router-link active-class="active-link" to="/dashboard_admins">
                         <font-awesome-icon icon="users-cog" />
                         Admins
-                    </router-link>
-                </li>
-                <li>
-                    <router-link active-class="active-link" to="/settings">
-                        <font-awesome-icon icon="cogs" />
-                        Settings
                     </router-link>
                 </li>
             </ul>
@@ -53,7 +47,7 @@
                     <font-awesome-icon icon="bell" />
                 </li>
                 <li>
-                    <font-awesome-icon icon="sign-out-alt" />
+                    <font-awesome-icon @click="logout" icon="sign-out-alt" />
                 </li>
             </ul>
         </div>
@@ -70,6 +64,15 @@ export default {
         ...mapGetters({
             currentUser: 'getCurrentUserFromStore'
         })
+    },
+    created: async function() {
+        await this.$store.dispatch('getCategories');
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem('auth_token');
+            window.location.href = '/dashboard_login'
+        }
     }
 }
 </script>

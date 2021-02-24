@@ -1,8 +1,10 @@
+import axios from "axios";
 
 export const userModule = {
     state: {
         currentUser: null,
-        isLoggedIn: false
+        isLoggedIn: false,
+        admins: null
     },
     mutations: {
         setCurrentUser(state, user) {
@@ -13,6 +15,9 @@ export const userModule = {
             state.error = error;
             state.currentUser = null;
             state.isLoggedIn = false;
+        },
+        setAdmins(state, payload) {
+                state.admins = payload;
         }
     },
     actions: {
@@ -41,11 +46,18 @@ export const userModule = {
             } catch (error) {
                 state.commit('setError', error);
             }
+        },
+        async getAdmins(state, payload) {
+            const res = await axios.get('api/dashboard/admins');
+            if (res.status === 200) {
+                state.commit('setAdmins', res.data);
+            }
         }
     },
     getters: {
         getCurrentUserFromStore: state => state.currentUser,
         getCurrentUserIsLoggedIn: state => state.isLoggedIn,
-        getCurrentUserError: state => state.error
+        getCurrentUserError: state => state.error,
+        getAdminsFromStore: state => state.admins
     }
 }
