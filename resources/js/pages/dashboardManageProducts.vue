@@ -149,7 +149,7 @@ export default {
                 'getProducts',
                 {
                     sort_by_query: this.filter.sort_by_options.find(option => option.value === this.filter.sort_by),
-                    page_url: pageItem.url.slice(45),
+                    page_url: pageItem.url.slice(22),
                     search_query: this.filter.search_query
                 }
             )
