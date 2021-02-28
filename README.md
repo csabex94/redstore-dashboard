@@ -11,4 +11,4 @@
 [https://redstore-dashboard.000webhostapp.com]
 
 ## Credentials
-# email
+Email: admin@gmail.com, password: admin
