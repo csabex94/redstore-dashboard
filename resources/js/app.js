@@ -14,6 +14,7 @@ import { faHome, faPlusSquare, faListAlt, faSlidersH, faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+
 import App from './components/app';
 
 library.add(faHome, faPlusSquare, faListAlt, faSlidersH, 

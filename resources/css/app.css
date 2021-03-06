@@ -7,3 +7,358 @@
 html {
     font-family: 'Nunito', sans-serif;
 }
+
+.dashboard-section {
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 280px 1fr 1fr 1fr 1fr;
+    grid-template-rows: 80px 1fr;
+    grid-template-areas: "sidebar navigation navigation navigation navigation" "sidebar content-children content-children content-children content-children";
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    grid-column: 1 / 1;
+    grid-row: 1 / -1;
+}
+
+.sidebar>.logo {
+    width: 200px;
+    margin: 15px auto;
+}
+
+.sidebar>ul>li>a {
+    width: 70%;
+    margin: 20px auto;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 18px;
+}
+
+.sidebar>ul>li>a:hover, .sidebar>ul>li>a.active-link, .sidebar>ul>li>a:hover>i, .sidebar>ul>li>a.active-link>i {
+    color: #ff523b;
+}
+
+.sidebar>ul>li>a.active, .sidebar>ul>li>a.active-link, .sidebar>ul>li>a:active>i, .sidebar>ul>li>a.active-link>i {
+    color: #ff523b;
+}
+
+.sidebar>ul>li>a>i {
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+.navbar {
+    grid-area: navigation;
+    background: #fff;
+    grid-column: 2 / -1;
+    grid-row: 1 / 1;
+}
+
+.navbar>ul {
+    display: flex;
+    list-style: none;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 25px;
+}
+
+.navbar>ul>li {
+    margin-left: 20px;
+    transition: all .3s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.navbar>ul>li>i {
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+}
+
+.navbar>ul>li>i:hover {
+    color: #ff523b;
+}
+
+.navbar>ul>li>.avatar>i:hover {
+    color: #ff523b;
+}
+
+.navbar>ul>li>.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar>ul>li>.avatar>i {
+    font-size: 25px;
+    color: #333;
+    cursor: pointer;
+}
+
+.navbar>ul>li>.username {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.content {
+    grid-area: content-children;
+    background: #F0F2F5;
+    grid-column: 2 / -1;
+    grid-row: 2 / -1;
+}
+
+/* Manage Other Products */
+
+.manage-other-products-content {
+    width: 98%;
+    max-width: 1200px;
+    min-height: 765px;
+    background: #fff;
+    margin: 30px auto 0;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, .25);
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.manage-other-products-content>h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.manage-other-products-content > .form-control {
+    width: 100%;
+    margin-top: 25px;
+}
+
+.manage-other-products-content > .form-control >
+input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+.manage-other-products-content > .form-control >
+input:focus {
+    outline: none;
+}
+
+.manage-other-products-content > .form-control > label {
+    color: #333;
+    font-weight: bold;
+}
+
+.manage-other-products-content > .list-head {
+    width: 100%;
+    background: #ff523b;
+    color: #fff;
+    margin-top: 10px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-gap: 10px;
+}
+.manage-other-products-content > .product {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-gap: 10px;
+    border-bottom: 1px solid #333;
+    padding: 7px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.manage-other-products-content > .list-head > span:first-child, 
+.manage-other-products-content > .product > span:first-child {
+    grid-column: 1 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(2), 
+.manage-other-products-content > .product > span:nth-child(2) {
+    grid-column: 2 / 5;
+}
+.manage-other-products-content > .list-head > span:nth-child(3),
+.manage-other-products-content > .product > span:nth-child(3) {
+    grid-column: 5 / 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(4),
+.manage-other-products-content > .product > span:nth-child(4) {
+    grid-column: 7 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(5),
+.manage-other-products-content > .product > span:nth-child(5) {
+    grid-column: 9 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(6),
+.manage-other-products-content > .product > span:nth-child(6) {
+    grid-column: 10 / 12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(7),
+.manage-other-products-content > .product > span:nth-child(7) {
+    grid-column: 12 / 14;
+}
+.manage-other-products-content > .list-head > span:nth-child(8),
+.manage-other-products-content > .product > span:nth-child(8) {
+    grid-column: 14 / 15;
+}
+.manage-other-products-content > .list-head > span:nth-child(9),
+.manage-other-products-content > .product > span:nth-child(9) {
+    grid-column: 15 / 17;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.manage-other-products-content > .list-head > span:nth-child(10),
+.manage-other-products-content > .product > span:nth-child(10) {
+    grid-column: 17 / 19;
+}
+
+.manage-other-products-content > .product > span:nth-child(10) > a {
+    color: inherit;
+    cursor: pointer;
+    transition: .3s;
+    margin-right: 10px;
+}
+.manage-other-products-content > .product > span:nth-child(10) > i {
+    color: inherit;
+    cursor: pointer;
+    transition: .3s;
+    margin-right: 10px;
+}
+
+.manage-other-products-content > .product > span:nth-child(10) > a:hover {
+    color: #ff523b;
+}
+.manage-other-products-content > .product > span:nth-child(10) > i:hover {
+    color: #ff523b;
+}
+
+/* Livewire Pagination */
+.pagination {
+    list-style: none;
+    display: flex;
+    position: absolute;
+    bottom: 5px;
+}
+
+.pagination > .page-item {
+    width: 35px;
+    height: 35px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination > .page-item.active {
+    background-color: #ff523b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pagination > .page-item > button {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: inherit;
+    color: #fff;
+    border: none;
+    background: #333;
+    cursor: pointer;
+}
+
+.pagination > .page-item > button:focus {
+    outline: none;
+}
+
+.pagination > .page-item.disabled {
+    opacity: .4;
+}
+
+/* Delete Modal */
+.delete-modal {
+    width: 400px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+    padding: 20px;
+}
+.delete-modal > .buttons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.delete-modal > .buttons > button:first-child {
+    margin-right: 20px;
+}
+.delete-modal > .buttons > button:nth-child(2) {
+    background: #ff523b;
+    color: #fff;
+}
+.delete-modal > .buttons > button {
+    border: none;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-modal-bg {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

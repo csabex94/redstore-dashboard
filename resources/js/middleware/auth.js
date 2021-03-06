@@ -14,7 +14,7 @@ export default async function auth({ next, store, to }) {
         if (!store.state.user.isLoggedIn && !store.state.user.currentUser) {
             await store.dispatch('getUser');
             if (store.state.user.isLoggedIn && store.state.user.currentUser) {
-                return next('/');
+                return next('/home');
             } else {
                 return next();
             }

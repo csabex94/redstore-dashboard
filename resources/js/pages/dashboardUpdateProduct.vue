@@ -104,12 +104,12 @@ export default {
             await this.$store.dispatch('updateProduct', { body: this.form, productId: this.$route.query.productId });
         }
     },
-    beforeRouteEnter(to, from, next) {
-        if (from.name !== 'dashboard_manage_products') {
-            next('/manage_products');
-        }
-        next();
-    },
+    // beforeRouteEnter(to, from, next) {
+    //     if (from.name !== 'dashboard_manage_products') {
+    //         next('/manage_products');
+    //     }
+    //     next();
+    // },
     created: async function () {
         await this.$store.dispatch('getProductById', this.$route.query.productId);
     },

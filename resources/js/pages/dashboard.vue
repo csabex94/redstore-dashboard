@@ -22,6 +22,12 @@
                     </router-link>
                 </li>
                 <li>
+                    <a active-class="active-link" href="/manage_other_products">
+                        <font-awesome-icon icon="list-alt" />
+                        Manage Products2
+                    </a>
+                </li>
+                <li>
                     <router-link active-class="active-link" to="/categories">
                         <font-awesome-icon icon="sliders-h" />
                         Categories
@@ -82,7 +88,7 @@ export default {
         width: 100%;
         min-height: 100vh;
         display: grid;
-        grid-template-columns: 260px 1fr 1fr 1fr 1fr;
+        grid-template-columns: 280px 1fr 1fr 1fr 1fr;
         grid-template-rows: 80px 1fr;
         grid-template-areas: "sidebar navigation navigation navigation navigation"
         "sidebar content-children content-children content-children content-children";
@@ -98,7 +104,7 @@ export default {
     }
     .sidebar > .logo {
         width: 200px;
-        margin: 15px 25px;
+        margin: 15px auto;
     }
     .sidebar > ul > li > a {
         width: 70%;

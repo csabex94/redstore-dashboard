@@ -12,11 +12,19 @@ export const categoryModule = {
     },
     actions: {
         async getCategories(state, payload) {
-            const res = await axios.get('api/categories/all');
-            if (res.status === 200) {
-                state.commit('setCategories', res.data.data);
-            }
-            
+            try {
+                const res = await axios.get('api/categories/all', { 
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Authorization': localStorage.getItem('auth_token')
+                    } 
+                });
+                if (res.status === 200) {
+                    state.commit('setCategories', res.data.data);
+                }
+            } catch(error) {
+                console.log(error);
+            }       
         },
         async addCategory(state, payload) {
             const res = await axios.post('api/categories/add', payload);
